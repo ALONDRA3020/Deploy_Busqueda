@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Algoritmos de Búsqueda</title>
+
+    <style>
+
+        body{
+            background:#0f172a;
+            font-family:Arial;
+            color:white;
+            text-align:center;
+            padding-top:40px;
+        }
+
+        .contenedor{
+
+            width:500px;
+            margin:auto;
+            background:#1e293b;
+            padding:30px;
+            border-radius:15px;
+        }
+
+        input,select{
+
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            border:none;
+            border-radius:10px;
+            box-sizing:border-box;
+        }
+
+        button{
+
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+            border:none;
+            border-radius:10px;
+            background:#38bdf8;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+
+            background:#0ea5e9;
+        }
+
+        .resultado{
+
+            margin-top:20px;
+            background:#334155;
+            padding:15px;
+            border-radius:10px;
+            word-wrap:break-word;
+        }
+
+        .error{
+
+            color:#f87171;
+            margin-top:20px;
+        }
+
+        h1{
+
+            color:#38bdf8;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>Algoritmos de Búsqueda</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <input
+            type="text"
+            name="estado_inicial"
+            placeholder="Estado inicial Ej: 4,2,3,1"
+            value="{{ estado_inicial }}"
+            required
+        >
+
+        <input
+            type="text"
+            name="estado_final"
+            placeholder="Estado final Ej: 1,2,3,4"
+            value="{{ estado_final }}"
+            required
+        >
+
+        <select name="algoritmo">
+
+            <option value="bfs"
+            {% if algoritmo == 'bfs' %}selected{% endif %}>
+                Búsqueda en Amplitud
+            </option>
+
+            <option value="dfs"
+            {% if algoritmo == 'dfs' %}selected{% endif %}>
+                Búsqueda en Profundidad
+            </option>
+
+            <option value="recursiva"
+            {% if algoritmo == 'recursiva' %}selected{% endif %}>
+                Búsqueda Recursiva
+            </option>
+
+        </select>
+
+        <button type="submit">
+
+            Resolver
+
+        </button>
+
+    </form>
+
+    {% if resultado %}
+
+        <div class="resultado">
+
+            <h2>Resultado</h2>
+
+            {{ resultado }}
+
+        </div>
+
+    {% endif %}
+
+    {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
