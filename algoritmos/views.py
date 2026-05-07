@@ -8,16 +8,36 @@ def convertir_lista(texto):
     return [int(x) for x in texto.split(',')]
 
 
+def obtener_camino(nodo, estado_inicial):
+
+    resultado = []
+
+    while nodo.get_padre() != None:
+
+        resultado.append(
+            nodo.get_datos()
+        )
+
+        nodo = nodo.get_padre()
+
+    resultado.append(estado_inicial)
+
+    resultado.reverse()
+
+    return resultado
+
+
 def index(request):
 
-    resultado = None
+    bfs_resultado = None
+    dfs_resultado = None
+    rec_resultado = None
+
     error = None
 
     if request.method == 'POST':
 
         try:
-
-            algoritmo = request.POST['algoritmo']
 
             estado_inicial = convertir_lista(
                 request.POST['estado_inicial']
@@ -27,57 +47,51 @@ def index(request):
                 request.POST['estado_final']
             )
 
-            nodo = None
+            # BFS
+            nodo_bfs = buscar_bfs(
+                estado_inicial,
+                solucion
+            )
 
-            if algoritmo == 'bfs':
+            if nodo_bfs:
 
-                nodo = buscar_bfs(
-                    estado_inicial,
-                    solucion
-                )
-
-            elif algoritmo == 'dfs':
-
-                nodo = buscar_dfs(
-                    estado_inicial,
-                    solucion
-                )
-
-            elif algoritmo == 'recursiva':
-
-                visitados = []
-
-                nodo_inicial = Nodo(
+                bfs_resultado = obtener_camino(
+                    nodo_bfs,
                     estado_inicial
                 )
 
-                nodo = buscar_recursiva(
-                    nodo_inicial,
-                    solucion,
-                    visitados
-                )
+            # DFS
+            nodo_dfs = buscar_dfs(
+                estado_inicial,
+                solucion
+            )
 
-            if nodo:
+            if nodo_dfs:
 
-                resultado = []
-
-                while nodo.get_padre() != None:
-
-                    resultado.append(
-                        nodo.get_datos()
-                    )
-
-                    nodo = nodo.get_padre()
-
-                resultado.append(
+                dfs_resultado = obtener_camino(
+                    nodo_dfs,
                     estado_inicial
                 )
 
-                resultado.reverse()
+            # Recursiva
+            visitados = []
 
-            else:
+            nodo_inicial = Nodo(
+                estado_inicial
+            )
 
-                error = "No se encontró solución"
+            nodo_rec = buscar_recursiva(
+                nodo_inicial,
+                solucion,
+                visitados
+            )
+
+            if nodo_rec:
+
+                rec_resultado = obtener_camino(
+                    nodo_rec,
+                    estado_inicial
+                )
 
         except:
 
@@ -87,22 +101,9 @@ def index(request):
         request,
         'algoritmos/index.html',
         {
-            'resultado': resultado,
-            'error': error,
-
-            'estado_inicial': request.POST.get(
-                'estado_inicial',
-                ''
-            ),
-
-            'estado_final': request.POST.get(
-                'estado_final',
-                ''
-            ),
-
-            'algoritmo': request.POST.get(
-                'algoritmo',
-                ''
-            )
+            'bfs_resultado': bfs_resultado,
+            'dfs_resultado': dfs_resultado,
+            'rec_resultado': rec_resultado,
+            'error': error
         }
     )
